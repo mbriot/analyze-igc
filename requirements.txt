@@ -1,0 +1,6 @@
+bs4
+requests
+click
+numpy
+pandas
+aerofiles
