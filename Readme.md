@@ -1,3 +1,8 @@
+# Installation
+
+python3 setup.py bdist_wheel && pip install dist/crossanalyzer-0.1.0-py3-none-any.whl
+
+pip uninstall crossanalyzer -y && rm -rf dist build crossanalyzer.egg-info
 
 # IGC scrapping
 

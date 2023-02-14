@@ -14,11 +14,12 @@ logger.setLevel(logging.DEBUG)
 
 class FilterIgc :
 
-    def __init__(self, inputDir):
+    def __init__(self, inputDir, distanceFromTakeoff):
         self.inputDir = inputDir
+        self.distanceFromTakeoff = distanceFromTakeoff
 
-    def filter(self) :
-        for igcFile in Path(input_dir).glob('*'):
+    def getDistanceFromTakeoff(self) :
+        for igcFile in Path(self.inputDir).glob('*'):
             with open(igcFile, "r") as f:
                 decoded_igc = aerofiles.igc.Reader().read(f.readlines())
             
@@ -47,10 +48,10 @@ class FilterIgc :
             df = pd.DataFrame({'vitesse': v, 'direction': directions, 'km': km, 'delta': delta, 'timestamps': timestamps[1:], 'altitude': altitudes[1:], 'latitude': latitudes[1:], 'longitude': longitudes[1:]})
             distanceFromTakeOf = int(haversine_np(df['longitude'].iloc[0], df['latitude'].iloc[0], df['longitude'].iloc[-1], df['latitude'].iloc[-1]) * 1000)
     
-            if distanceFromTakeOf > distance_min_between_takeoff_and_landing :
-                logger.debug(f"Flight by {igcFile} a été a plus de {distance_min_between_takeoff_and_landing}m de la comté. Exactement {distanceFromTakeOf}m")
+            if distanceFromTakeOf > self.distanceFromTakeoff :
+                logger.debug(f"Flight by {igcFile} a été a plus de {self.distanceFromTakeoff}m de l'attero. Exactement {distanceFromTakeOf}m")
             else :
-                logger.debug(f"Et c'est le fail, {distanceFromTakeOf}m de la comté")
+                logger.debug(f"Et c'est le fail, {distanceFromTakeOf}m de l'attero")
     
 def haversine_np(lon1, lat1, lon2, lat2):
     """

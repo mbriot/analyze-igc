@@ -1,5 +1,6 @@
 import logging
 import os
+from tracemalloc import start
 import requests
 import shutil
 from bs4 import BeautifulSoup
@@ -15,17 +16,18 @@ ID_PAYS=66
 
 class Syride :
 
-    def __init__(self, minDistance, maxDistance, minPlafond, spotId, maxTraceToGet, outputDir):
+    def __init__(self, minDistance, maxDistance, minPlafond, spotId, maxTraceToGet, startAtPage, outputDir):
         self.minDistance = minDistance
         self.maxDistance = maxDistance
         self.minPlafond = minPlafond
         self.spotId = spotId
         self.maxTraceToGet = maxTraceToGet
+        self.startAtPage = startAtPage
         self.outputDir = outputDir
 
     def getFlights(self):
         logger.debug(f"start getting flights for spot ID {self.spotId}")
-        flights = getFlightsList(self.spotId, self.minPlafond, self.minDistance, self.maxDistance, self.maxTraceToGet)
+        flights = getFlightsList(self.spotId, self.minPlafond, self.minDistance, self.maxDistance, self.maxTraceToGet, self.startAtPage)
         logger.debug(f"nbre de vols trouvés : {len(flights)}")
 
         if os.path.exists(self.outputDir):
@@ -39,14 +41,15 @@ class Syride :
             flight['flightIgcUrl'] = f"https://www.syride.com/scripts/downloadIGC.php?idSession={flight['flightNumber']}&key={flight['key']}"
             saveFlight(flight, self.outputDir)
 
-def getFlightsList(spotId, minPlafond, minDistance, maxDistance, maxTraceToGet):
+def getFlightsList(spotId, minPlafond, minDistance, maxDistance, maxTraceToGet, startAtPage):
     flights = []
-    page_number = 1
+    page_number = startAtPage
     need_exit = False
     while True :
         flightsListUrl = getFlightsListUrl(spotId, page_number)
 
         page = requests.get(flightsListUrl)
+        logger.debug(f"request for page {page_number} : {page.status_code}")
         soup = BeautifulSoup(page.content, "html.parser")
         table = soup.find("table")
 

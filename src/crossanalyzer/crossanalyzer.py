@@ -1,7 +1,7 @@
 import click
 import logging
-from getigc.get_syride_igc import Syride
-from filterigc.filter_igc import FilterIgc
+from crossanalyzer.getigc.get_syride_igc import Syride
+from crossanalyzer.filterigc.filter_igc import FilterIgc
 
 logger = logging.getLogger("get-igc")
 ch = logging.StreamHandler()
@@ -19,12 +19,13 @@ def cli():
 @click.option("--min-plafond", required=True, type=int)
 @click.option("--spot-id", required=True, type=str)
 @click.option("--max-trace-to-get", required=False, type=int, default=10)
+@click.option("--start-at-page", required=False, type=int, default=1)
 @click.option("--output-dir", required=True, type=str)
-def get_syride_igc(min_distance, max_distance, min_plafond, spot_id, max_trace_to_get, output_dir):
+def get_syride_igc(min_distance, max_distance, min_plafond, spot_id, max_trace_to_get, start_at_page, output_dir):
     logger.debug(
         f"Parameters :  min_plaf : {min_plafond}, min_distance: {min_distance}, max_distance: {max_distance}, spot_id : {spot_id}, max_trace_to_get: {max_trace_to_get}"
     )
-    syride = Syride(min_distance, max_distance, min_plafond, spot_id, max_trace_to_get, output_dir)
+    syride = Syride(min_distance, max_distance, min_plafond, spot_id, max_trace_to_get, start_at_page, output_dir)
     syride.getFlights()
 
 @cli.command()
@@ -32,8 +33,5 @@ def get_syride_igc(min_distance, max_distance, min_plafond, spot_id, max_trace_t
 @click.option("--distance-min-between-takeoff-and-landing", required=False, type=int)
 def filterigc(input_dir, distance_min_between_takeoff_and_landing):
     logger.debug("On commence")
-    filterIgc = FilterIgc(input_dir)
-    filterIgc.filter()
-
-if __name__ == "__main__":
-    cli()
+    filterIgc = FilterIgc(input_dir, distance_min_between_takeoff_and_landing)
+    filterIgc.getDistanceFromTakeoff()
