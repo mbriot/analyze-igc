@@ -1,8 +1,10 @@
 # Installation
 
-python3 setup.py bdist_wheel && pip install dist/crossanalyzer-0.1.0-py3-none-any.whl
+rm -rf dist && pip uninstall crossanalyzer -y && poetry install && poetry build && pip3 install dist/crossanalyzer-0.1.0-py3-none-any.whl
 
-pip uninstall crossanalyzer -y && rm -rf dist build crossanalyzer.egg-info
+crossanalyzer get-syride-igc --spot-id=490 --min-distance=5 --max-distance=30 --min-plafond=100 --output-dir=/Users/arnaud/Desktop/planfait --start-at-page=150
+
+crossanalyzer filterigc --input-dir=/Users/arnaud/Desktop/planfait --distance-min-between-takeoff-and-landing=10000
 
 # IGC scrapping
 
