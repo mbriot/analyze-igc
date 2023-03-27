@@ -35,6 +35,6 @@ detecter vol paramoteur : periode de monté longue sans rotation avec gain de ha
 
 
 ### Librairie wheel sur pypy
-Comment gérer ce putain de spot Id ?
+Comment gérer le spot Id ?
 mylib --action=get-igc --min-distance --spot-id
 mylib --action=filter-igc --distance-min-between-takeoff-and-landing=10 || --min-distance-from-point-gps=50.2,2.3 --min-distance-from-point-meter=100
